@@ -2,7 +2,7 @@ import BaseComponent from '../../../components/BaseComponent';
 import Button from '../../../components/Button/Button';
 import Input from '../../../components/Input/Input';
 
-class GreateForm extends BaseComponent {
+class CreateForm extends BaseComponent {
   private _textInput: Input;
   private _colorInput: Input;
   private _greateButton: Button;
@@ -15,9 +15,9 @@ class GreateForm extends BaseComponent {
     this._colorInput = new Input(['greate__color-input'], 'color');
     this._colorInput.render(this.element);
 
-    this._greateButton = new Button(['btn', 'btn_greate'], 'Greate');
+    this._greateButton = new Button(['btn', 'btn_greate'], 'Create');
     this._greateButton.render(this.element);
   }
 }
 
-export default GreateForm;
+export default CreateForm;
