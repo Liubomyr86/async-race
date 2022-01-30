@@ -1,3 +1,5 @@
+import './_greate.scss';
+
 import BaseComponent from '../../../components/BaseComponent';
 import Button from '../../../components/Button/Button';
 import Input from '../../../components/Input/Input';
@@ -15,7 +17,7 @@ class CreateForm extends BaseComponent {
     this._colorInput = new Input(['greate__color-input'], 'color');
     this._colorInput.render(this.element);
 
-    this._greateButton = new Button(['btn', 'btn_greate'], 'Create');
+    this._greateButton = new Button(['btn', 'btn_create'], 'Create');
     this._greateButton.render(this.element);
   }
 }

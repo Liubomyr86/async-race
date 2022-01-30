@@ -1,3 +1,5 @@
+import './_car-track.scss';
+
 import BaseComponent from '../../../components/BaseComponent';
 import Button from '../../../components/Button/Button';
 import Car from '../Car/Car';
@@ -27,7 +29,7 @@ class CarTrack extends BaseComponent {
     this._removeButton.render(this._carSettings.element);
 
     this._carTitle = new BaseComponent('h2', ['car-container__title']);
-    this._carTitle.element.textContent = '';
+    this._carTitle.element.textContent = 'sdsdsdsd';
     this._carTitle.render(this._carSettings.element);
 
     this._carTrack = new BaseComponent('div', ['car-container__track']);
@@ -45,7 +47,7 @@ class CarTrack extends BaseComponent {
     this._car = new Car('#000000');
     this._car.render(this._carTrack.element);
 
-    this.flag = new BaseComponent('span', ['car-container-flag']);
+    this.flag = new BaseComponent('span', ['car-container__flag']);
     this.flag.element.innerHTML = '&#127937';
     this.flag.render(this._carTrack.element);
   }

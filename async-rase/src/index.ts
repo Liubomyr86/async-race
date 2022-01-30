@@ -1,3 +1,5 @@
+import './style.scss';
+
 import App from './app/app';
 
 const root = document.getElementById('root');

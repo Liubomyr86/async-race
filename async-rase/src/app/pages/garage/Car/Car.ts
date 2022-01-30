@@ -1,3 +1,5 @@
+import './_car.scss';
+
 import BaseComponent from '../../../components/BaseComponent';
 
 class Car extends BaseComponent {

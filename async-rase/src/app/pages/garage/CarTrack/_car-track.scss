@@ -1,0 +1,31 @@
+@import '../../../../sass/abstracts/mixins';
+
+.car-container {
+  &__settings {
+    display: flex;
+    margin-bottom: 10px;
+  }
+
+  &__title {
+    margin-left: 20px;
+    @include font($size: 25px);
+  }
+
+  &__track,
+  &__controls {
+    display: flex;
+  }
+
+  &__controls {
+    margin-right: 20px;
+  }
+
+  &__track {
+    border-bottom: 5px dashed white;
+  }
+
+  &__flag {
+    flex-grow: 1;
+    font-size: 50px;
+  }
+}

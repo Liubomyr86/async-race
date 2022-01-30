@@ -1,0 +1,24 @@
+@import '../../../sass/abstracts/_mixins.scss';
+
+.garage {
+  &__forms {
+    margin-bottom: 20px;
+
+    & > form:nth-child(2n) {
+      margin-top: 10px;
+    }
+  }
+
+  &__controls {
+    margin-bottom: 20px;
+  }
+
+  &__cars-count,
+  &__pages-count {
+    @include font($size: 25px);
+  }
+
+  &__pages-count {
+    margin-bottom: 20px;
+  }
+}

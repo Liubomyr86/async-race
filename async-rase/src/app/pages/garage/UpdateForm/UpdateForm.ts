@@ -1,3 +1,5 @@
+import './_update.scss';
+
 import BaseComponent from '../../../components/BaseComponent';
 import Button from '../../../components/Button/Button';
 import Input from '../../../components/Input/Input';
