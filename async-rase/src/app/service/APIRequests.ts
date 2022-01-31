@@ -6,8 +6,6 @@ class APIRequests {
   async getCars(path: string) {
     const response = await fetch(`${this._url}${path}`);
     const data: ICarData[] = await response.json();
-    console.log(data);
-
     const count = Number(response.headers.get('X-Total-Count'));
     return { data, count };
   }
@@ -15,8 +13,6 @@ class APIRequests {
   async getWinners(path: string) {
     const response = await fetch(`${this._url}${path}`);
     const data: IWinnersData = await response.json();
-    console.log(data);
-
     const count = Number(response.headers.get('X-Total-Count'));
     return { data, count };
   }

@@ -58,10 +58,10 @@ class Garage extends BaseComponent {
     this._pageValue.element.textContent = '0';
     this._pageValue.render(this._pageTitle.element);
 
-    this.getCars();
+    this.renderCars();
   }
 
-  async getCars() {
+  async renderCars() {
     const carsData = await api.getCars(Path.garage);
 
     carsData.data.forEach((car) => {

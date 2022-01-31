@@ -18,21 +18,24 @@ html {
   border: none;
   margin-left: 10px;
   border-radius: 5px;
-  box-shadow: 0 6px #999999;
+  box-shadow: 0 6px var(--color-shadow);
   z-index: 10;
   transition: 0.3s;
   text-transform: uppercase;
 
   &_garage,
   &_winners {
-    background-color: #f0e68c;
+    text-decoration: none;
+    color: var(--color-text);
+    padding: 5px 15px;
+    background-color: var(--color-btn);
     &:hover {
-      background-color: #fffacd;
+      background-color: var(--color-btn-hover);
     }
   }
 
   &:active {
-    box-shadow: 0 2px #666666;
+    box-shadow: 0 2px var(--color-shadow-active);
     transform: translateY(4px);
   }
 

@@ -22,10 +22,18 @@ class CarTrack extends BaseComponent {
     this._carSettings = new BaseComponent('div', ['car-container__settings']);
     this._carSettings.render(this.element);
 
-    this._selectButton = new Button(['btn', 'btn_select'], 'Select');
+    this._selectButton = new Button(
+      ['btn', 'btn_select'],
+      'Select',
+      `select-${id}`
+    );
     this._selectButton.render(this._carSettings.element);
 
-    this._removeButton = new Button(['btn', 'btn_remove'], 'Remove');
+    this._removeButton = new Button(
+      ['btn', 'btn_remove'],
+      'Remove',
+      `remove-${id}`
+    );
     this._removeButton.render(this._carSettings.element);
 
     this._carTitle = new BaseComponent('h2', ['car-container__title']);
@@ -38,13 +46,13 @@ class CarTrack extends BaseComponent {
     this._carControls = new BaseComponent('div', ['car-container__controls']);
     this._carControls.render(this._carTrack.element);
 
-    this._startButton = new Button(['btn', 'btn_start'], 'A');
+    this._startButton = new Button(['btn', 'btn_start'], 'A', `start${id}`);
     this._startButton.render(this._carControls.element);
 
-    this._stopButton = new Button(['btn', 'btn_stop'], 'B');
+    this._stopButton = new Button(['btn', 'btn_stop'], 'B', `stop-${id}`);
     this._stopButton.render(this._carControls.element);
 
-    this._car = new Car(color);
+    this._car = new Car(color, id);
     this._car.render(this._carTrack.element);
 
     this.flag = new BaseComponent('span', ['car-container__flag']);

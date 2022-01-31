@@ -3,8 +3,9 @@ import './_car.scss';
 import BaseComponent from '../../../components/BaseComponent';
 
 class Car extends BaseComponent {
-  constructor(color: string) {
+  constructor(color: string, id: number) {
     super('div', ['car']);
+    this.element.setAttribute('id', `car-${id}`);
     this.element.innerHTML = `
     <?xml version="1.0" ?>
     <svg enable-background="new 0 0 150 60" height="60" id="Shape_1_5_" overflow="visible" version="1.1" viewBox="0 0 1000
