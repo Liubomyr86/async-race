@@ -12,7 +12,7 @@ class Winners extends BaseComponent {
   private _winners: Promise<{ data: IWinnersData; count: number }>;
 
   constructor() {
-    super('main', ['main', 'winners']);
+    super('div', ['winners']);
     this._winners = api.getWinners(Path.winners);
 
     this._countTitle = new BaseComponent('div', ['winners__cars-count']);

@@ -3,10 +3,11 @@ import './_garage.scss';
 import BaseComponent from '../../components/BaseComponent';
 import Button from '../../components/Button/Button';
 import { api } from '../../service/APIRequests';
-import { ICarData, Path } from '../../utils/alias';
+import { Path } from '../../utils/alias';
 import CarTrack from './CarTrack/CarTrack';
 import CreateForm from './CreateForm/CreateForm';
 import UpdateForm from './UpdateForm/UpdateForm';
+import { state } from '../../utils/State';
 
 class Garage extends BaseComponent {
   private _greateForm: CreateForm;
@@ -24,7 +25,7 @@ class Garage extends BaseComponent {
   private _car: CarTrack | undefined;
 
   constructor() {
-    super('main', ['main', 'garage']);
+    super('div', ['garage']);
 
     this._formsContainer = new BaseComponent('div', ['garage__forms']);
     this._formsContainer.render(this.element);
@@ -48,14 +49,13 @@ class Garage extends BaseComponent {
     this._countTitle.element.textContent = 'Garage: ';
     this._countTitle.render(this._garageView.element);
     this._countValue = new BaseComponent('span');
-    this._countValue.element.textContent = '0';
     this._countValue.render(this._countTitle.element);
 
     this._pageTitle = new BaseComponent('div', ['garage__pages-count']);
     this._pageTitle.element.textContent = 'Page # ';
     this._pageTitle.render(this._garageView.element);
     this._pageValue = new BaseComponent('span');
-    this._pageValue.element.textContent = '0';
+    this._pageValue.element.textContent = `${state.garagePageCount}`;
     this._pageValue.render(this._pageTitle.element);
 
     this.renderCars();
@@ -63,6 +63,7 @@ class Garage extends BaseComponent {
 
   async renderCars() {
     const carsData = await api.getCars(Path.garage);
+    this._countValue.element.textContent = `${carsData.count}`;
 
     carsData.data.forEach((car) => {
       this._car = new CarTrack(car.name, car.color, car.id);

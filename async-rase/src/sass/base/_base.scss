@@ -5,7 +5,7 @@ html {
 }
 
 .main {
-  height: calc(100vh - 140px);
+  min-height: calc(100vh - 140px);
   width: 100%;
   padding: 20px 10px;
   background-color: var(--color-background);

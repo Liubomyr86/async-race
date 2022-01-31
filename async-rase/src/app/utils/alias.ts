@@ -13,3 +13,8 @@ export interface IWinnersData {
   time: number;
   wins: number;
 }
+
+export interface IQueryParams {
+  key?: string;
+  value?: number;
+}
