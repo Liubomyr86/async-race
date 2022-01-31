@@ -24,7 +24,7 @@ class App {
 
   start() {
     this.root.append(this.header.element);
-    this.root.append(this.winners.element);
+    this.root.append(this.garage.element);
     this.root.append(this.footer.element);
   }
 }

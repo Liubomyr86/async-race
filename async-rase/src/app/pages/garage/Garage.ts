@@ -3,7 +3,7 @@ import './_garage.scss';
 import BaseComponent from '../../components/BaseComponent';
 import Button from '../../components/Button/Button';
 import { api } from '../../service/APIRequests';
-import { Path } from '../../utils/alias';
+import { ICarData, Path } from '../../utils/alias';
 import CarTrack from './CarTrack/CarTrack';
 import CreateForm from './CreateForm/CreateForm';
 import UpdateForm from './UpdateForm/UpdateForm';
@@ -14,19 +14,17 @@ class Garage extends BaseComponent {
   private _raceButton: Button;
   private _resetButton: Button;
   private _generateButton: Button;
-  private _garage: Promise<void>;
   private _countTitle: BaseComponent;
   private _pageTitle: BaseComponent;
   private _garageView: BaseComponent;
-  private _cars: CarTrack;
   private _formsContainer: BaseComponent;
   private _raceControls: BaseComponent;
   private _countValue: BaseComponent;
   private _pageValue: BaseComponent;
+  private _car: CarTrack | undefined;
 
   constructor() {
     super('main', ['main', 'garage']);
-    this._garage = api.getCars(Path.garage);
 
     this._formsContainer = new BaseComponent('div', ['garage__forms']);
     this._formsContainer.render(this.element);
@@ -60,16 +58,16 @@ class Garage extends BaseComponent {
     this._pageValue.element.textContent = '0';
     this._pageValue.render(this._pageTitle.element);
 
-    this._cars = new CarTrack();
-    this._cars.render(this._garageView.element);
-
     this.getCars();
   }
 
   async getCars() {
-    let data: any = [];
-    this._garage.then((res) => (data = res));
-    console.log(data);
+    const carsData = await api.getCars(Path.garage);
+
+    carsData.data.forEach((car) => {
+      this._car = new CarTrack(car.name, car.color, car.id);
+      this._car.render(this._garageView.element);
+    });
   }
 }
 

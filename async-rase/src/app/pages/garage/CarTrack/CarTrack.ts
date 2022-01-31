@@ -16,7 +16,7 @@ class CarTrack extends BaseComponent {
   private _car: Car;
   flag: BaseComponent;
 
-  constructor() {
+  constructor(name: string, color: string, id: number) {
     super('div', ['car-container']);
 
     this._carSettings = new BaseComponent('div', ['car-container__settings']);
@@ -29,7 +29,7 @@ class CarTrack extends BaseComponent {
     this._removeButton.render(this._carSettings.element);
 
     this._carTitle = new BaseComponent('h2', ['car-container__title']);
-    this._carTitle.element.textContent = 'sdsdsdsd';
+    this._carTitle.element.textContent = name;
     this._carTitle.render(this._carSettings.element);
 
     this._carTrack = new BaseComponent('div', ['car-container__track']);
@@ -44,7 +44,7 @@ class CarTrack extends BaseComponent {
     this._stopButton = new Button(['btn', 'btn_stop'], 'B');
     this._stopButton.render(this._carControls.element);
 
-    this._car = new Car('#000000');
+    this._car = new Car(color);
     this._car.render(this._carTrack.element);
 
     this.flag = new BaseComponent('span', ['car-container__flag']);

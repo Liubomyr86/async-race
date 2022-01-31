@@ -1,12 +1,19 @@
 import BaseComponent from '../../components/BaseComponent';
+import { api } from '../../service/APIRequests';
+import { Path, IWinnersData } from '../../utils/alias';
+import Table from './Table/Table';
 
 class Winners extends BaseComponent {
   private _countTitle: BaseComponent;
   private _countValue: BaseComponent;
   private _pageTitle: BaseComponent;
   private _pageValue: BaseComponent;
+  private _scoreTable: Table;
+  private _winners: Promise<{ data: IWinnersData; count: number }>;
+
   constructor() {
     super('main', ['main', 'winners']);
+    this._winners = api.getWinners(Path.winners);
 
     this._countTitle = new BaseComponent('div', ['winners__cars-count']);
     this._countTitle.element.textContent = 'Winners: ';
@@ -21,6 +28,9 @@ class Winners extends BaseComponent {
     this._pageValue = new BaseComponent('span');
     this._pageValue.element.textContent = '0';
     this._pageValue.render(this._pageTitle.element);
+
+    this._scoreTable = new Table();
+    this._scoreTable.render(this.element);
   }
 }
 export default Winners;
