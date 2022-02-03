@@ -21,10 +21,22 @@ class APIRequests {
   }
 
   async getWinners(path: string) {
-    const response = await fetch(`${this._url}${path}`);
-    const data: IWinnersData = await response.json();
+    const response = await fetch(
+      `${this._url}${path}${this.generateQueryString([
+        { key: '_page', value: 1 },
+        { key: '_limit', value: 10 },
+      ])}`
+    );
+    const data: IWinnersData[] = await response.json();
     const count = Number(response.headers.get('X-Total-Count'));
     return { data, count };
+  }
+
+  async getCar(path: string, id: number) {
+    const response = await fetch(`${this._url}${path}/${id}`);
+    const data: ICarData = await response.json();
+    console.log(data);
+    return data;
   }
 }
 

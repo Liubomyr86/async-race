@@ -1,0 +1,12 @@
+@import '../../../sass/abstracts/_mixins.scss';
+
+.winners {
+  &__cars-count,
+  &__pages-count {
+    @include font($size: 25px);
+  }
+
+  &__pages-count {
+    margin-bottom: 20px;
+  }
+}

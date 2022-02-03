@@ -1,0 +1,9 @@
+.winners__table {
+  & > thead {
+    background-color: dodgerblue;
+  }
+
+  & th {
+    padding: 8px;
+  }
+}

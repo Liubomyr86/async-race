@@ -1,3 +1,5 @@
+import './_table.scss';
+
 import BaseComponent from '../../../components/BaseComponent';
 
 class Table extends BaseComponent {
