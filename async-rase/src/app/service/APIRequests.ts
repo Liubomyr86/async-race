@@ -1,4 +1,4 @@
-import { ICarData, IQueryParams, IWinnersData } from '../utils/alias';
+import { ICarData, IQueryParams, IWinnersData, Path } from '../utils/alias';
 
 class APIRequests {
   private _url: string = 'http://127.0.0.1:3000';
@@ -35,7 +35,19 @@ class APIRequests {
   async getCar(path: string, id: number) {
     const response = await fetch(`${this._url}${path}/${id}`);
     const data: ICarData = await response.json();
-    console.log(data);
+    return data;
+  }
+
+  async createCar(carData: ICarData) {
+    const response = await fetch(`${this._url}${Path.garage}`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(carData),
+    });
+
+    const data: ICarData = await response.json();
     return data;
   }
 }

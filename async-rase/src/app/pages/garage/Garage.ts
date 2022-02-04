@@ -66,7 +66,7 @@ class Garage extends BaseComponent {
     this._countValue.element.textContent = `${carsData.count}`;
 
     carsData.data.forEach((car) => {
-      this._car = new CarTrack(car.name, car.color, car.id);
+      this._car = new CarTrack(car.name, car.color, car.id!);
       this._car.render(this._garageView.element);
     });
   }

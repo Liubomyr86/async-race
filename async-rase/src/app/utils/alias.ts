@@ -5,7 +5,7 @@ export enum Path {
 export interface ICarData {
   name: string;
   color: string;
-  id: number;
+  id?: number;
 }
 
 export interface IWinnersData {
@@ -18,3 +18,8 @@ export interface IQueryParams {
   key?: string;
   value?: number;
 }
+
+// export interface ICreateCar {
+//   name: string;
+//   color: string;
+// }

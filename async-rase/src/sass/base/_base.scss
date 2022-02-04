@@ -4,6 +4,11 @@ html {
   @include font;
 }
 
+button[disabled],
+html input[disabled] {
+  background-color: darkgray;
+}
+
 .main {
   min-height: calc(100vh - 140px);
   width: 100%;

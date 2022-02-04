@@ -12,12 +12,15 @@ class UpdateForm extends BaseComponent {
   constructor() {
     super('form', ['form', 'update']);
     this._textInput = new Input(['update__text-input'], 'text');
+    this._textInput.element.setAttribute('disabled', 'true');
     this._textInput.render(this.element);
 
     this._colorInput = new Input(['update__color-input'], 'color');
+    this._colorInput.element.setAttribute('disabled', 'true');
     this._colorInput.render(this.element);
 
     this._updateButton = new Button(['btn', 'btn_update'], 'Update');
+    this._updateButton.element.setAttribute('disabled', 'true');
     this._updateButton.render(this.element);
   }
 }

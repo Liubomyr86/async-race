@@ -19,7 +19,7 @@ class TableData extends BaseComponent {
     this._thNumber.render(this.element);
 
     this._thCar = new BaseComponent('th');
-    this._car = new Car(car.color, car.id);
+    this._car = new Car(car.color, car.id!);
     this._car.render(this._thCar.element);
     this._thCar.render(this.element);
 
