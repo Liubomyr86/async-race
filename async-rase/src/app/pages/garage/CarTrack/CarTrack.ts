@@ -3,6 +3,9 @@ import './_car-track.scss';
 import BaseComponent from '../../../components/BaseComponent';
 import Button from '../../../components/Button/Button';
 import Car from '../Car/Car';
+import { api } from '../../../service/APIRequests';
+import { ICarData, Path } from '../../../utils/alias';
+import { state } from '../../../utils/State';
 
 class CarTrack extends BaseComponent {
   private _carSettings: BaseComponent;
@@ -14,9 +17,14 @@ class CarTrack extends BaseComponent {
   private _startButton: Button;
   private _stopButton: Button;
   private _car: Car;
-  flag: BaseComponent;
+  private _flag: BaseComponent;
 
-  constructor(name: string, color: string, id: number) {
+  constructor(
+    name: string,
+    color: string,
+    id: number,
+    callback: (data: ICarData) => void
+  ) {
     super('div', ['car-container']);
 
     this._carSettings = new BaseComponent('div', ['car-container__settings']);
@@ -55,9 +63,18 @@ class CarTrack extends BaseComponent {
     this._car = new Car(color, id);
     this._car.render(this._carTrack.element);
 
-    this.flag = new BaseComponent('span', ['car-container__flag']);
-    this.flag.element.innerHTML = '&#127937';
-    this.flag.render(this._carTrack.element);
+    this._flag = new BaseComponent('span', ['car-container__flag']);
+    this._flag.element.innerHTML = '&#127937';
+    this._flag.render(this._carTrack.element);
+    this.selectCar(id, callback);
+  }
+
+  selectCar(id: number, callback: (data: ICarData) => void) {
+    this._selectButton.element.addEventListener('click', async () => {
+      const carData = await api.getCar(id);
+      state.selectCarId = id;
+      callback(carData);
+    });
   }
 }
 export default CarTrack;

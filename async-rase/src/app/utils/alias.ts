@@ -18,8 +18,3 @@ export interface IQueryParams {
   key?: string;
   value?: number;
 }
-
-// export interface ICreateCar {
-//   name: string;
-//   color: string;
-// }

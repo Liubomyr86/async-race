@@ -8,9 +8,9 @@ class APIRequests {
       ? `?${queryParams.map((item) => `${item.key}=${item.value}`).join('&')}`
       : ``;
 
-  async getCars(path: string) {
+  async getCars() {
     const response = await fetch(
-      `${this._url}${path}${this.generateQueryString([
+      `${this._url}${Path.garage}${this.generateQueryString([
         { key: '_page', value: 1 },
         { key: '_limit', value: 7 },
       ])}`
@@ -20,9 +20,9 @@ class APIRequests {
     return { data, count };
   }
 
-  async getWinners(path: string) {
+  async getWinners() {
     const response = await fetch(
-      `${this._url}${path}${this.generateQueryString([
+      `${this._url}${Path.winners}${this.generateQueryString([
         { key: '_page', value: 1 },
         { key: '_limit', value: 10 },
       ])}`
@@ -32,8 +32,8 @@ class APIRequests {
     return { data, count };
   }
 
-  async getCar(path: string, id: number) {
-    const response = await fetch(`${this._url}${path}/${id}`);
+  async getCar(id: number) {
+    const response = await fetch(`${this._url}${Path.garage}/${id}`);
     const data: ICarData = await response.json();
     return data;
   }
@@ -41,6 +41,19 @@ class APIRequests {
   async createCar(carData: ICarData) {
     const response = await fetch(`${this._url}${Path.garage}`, {
       method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(carData),
+    });
+
+    const data: ICarData = await response.json();
+    return data;
+  }
+
+  async updateCar(carData: ICarData, id: number) {
+    const response = await fetch(`${this._url}${Path.garage}/${id}`, {
+      method: 'PUT',
       headers: {
         'Content-Type': 'application/json',
       },

@@ -3,6 +3,9 @@ import './_update.scss';
 import BaseComponent from '../../../components/BaseComponent';
 import Button from '../../../components/Button/Button';
 import Input from '../../../components/Input/Input';
+import { ICarData } from '../../../utils/alias';
+import { api } from '../../../service/APIRequests';
+import { state } from '../../../utils/State';
 
 class UpdateForm extends BaseComponent {
   private _textInput: Input;
@@ -22,6 +25,28 @@ class UpdateForm extends BaseComponent {
     this._updateButton = new Button(['btn', 'btn_update'], 'Update');
     this._updateButton.element.setAttribute('disabled', 'true');
     this._updateButton.render(this.element);
+    this.updateCar();
+  }
+
+  enableForm(data: ICarData) {
+    this._textInput.element.removeAttribute('disabled');
+    (<HTMLInputElement>this._textInput.element).value = data.name;
+    this._colorInput.element.removeAttribute('disabled');
+    (<HTMLInputElement>this._colorInput.element).value = data.color;
+    this._updateButton.element.removeAttribute('disabled');
+  }
+
+  updateCar() {
+    this._updateButton.element.addEventListener('click', async () => {
+      const carData = {
+        name: (<HTMLInputElement>this._textInput.element).value,
+        color: (<HTMLInputElement>this._colorInput.element).value,
+      };
+      await api.updateCar(carData, state.selectCarId);
+      this._textInput.element.setAttribute('disabled', 'true');
+      this._colorInput.element.setAttribute('disabled', 'true');
+      this._updateButton.element.setAttribute('disabled', 'true');
+    });
   }
 }
 

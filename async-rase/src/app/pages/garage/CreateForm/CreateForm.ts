@@ -29,7 +29,6 @@ class CreateForm extends BaseComponent {
         name: (<HTMLInputElement>this._textInput.element).value,
         color: (<HTMLInputElement>this._colorInput.element).value,
       };
-      console.log(carData);
       await api.createCar(carData);
     });
   }
