@@ -8,6 +8,7 @@ class APIRequests {
       ? `?${queryParams.map((item) => `${item.key}=${item.value}`).join('&')}`
       : ``;
 
+  // Garage
   async getCars() {
     const response = await fetch(
       `${this._url}${Path.garage}${this.generateQueryString([
@@ -16,18 +17,6 @@ class APIRequests {
       ])}`
     );
     const data: ICarData[] = await response.json();
-    const count = Number(response.headers.get('X-Total-Count'));
-    return { data, count };
-  }
-
-  async getWinners() {
-    const response = await fetch(
-      `${this._url}${Path.winners}${this.generateQueryString([
-        { key: '_page', value: 1 },
-        { key: '_limit', value: 10 },
-      ])}`
-    );
-    const data: IWinnersData[] = await response.json();
     const count = Number(response.headers.get('X-Total-Count'));
     return { data, count };
   }
@@ -62,6 +51,31 @@ class APIRequests {
 
     const data: ICarData = await response.json();
     return data;
+  }
+
+  async deleteCar(id: number) {
+    await fetch(`${this._url}${Path.garage}/${id}`, {
+      method: 'DELETE',
+    });
+  }
+
+  // Winners
+  async getWinners() {
+    const response = await fetch(
+      `${this._url}${Path.winners}${this.generateQueryString([
+        { key: '_page', value: 1 },
+        { key: '_limit', value: 10 },
+      ])}`
+    );
+    const data: IWinnersData[] = await response.json();
+    const count = Number(response.headers.get('X-Total-Count'));
+    return { data, count };
+  }
+
+  async deleteWinner(id: number) {
+    await fetch(`${this._url}${Path.winners}/${id}`, {
+      method: 'DELETE',
+    });
   }
 }
 

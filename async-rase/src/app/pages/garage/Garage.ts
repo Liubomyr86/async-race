@@ -64,13 +64,17 @@ class Garage extends BaseComponent {
   async renderCars() {
     const carsData = await api.getCars();
     this._countValue.element.textContent = `${carsData.count}`;
+    this._garageView.element.innerHTML = '';
+    this._countTitle.render(this._garageView.element);
+    this._pageTitle.render(this._garageView.element);
 
     carsData.data.forEach((car) => {
       this._car = new CarTrack(
         car.name,
         car.color,
         car.id!,
-        this._updateForm.enableForm.bind(this._updateForm)
+        this._updateForm.enableForm.bind(this._updateForm),
+        this.renderCars.bind(this)
       );
       this._car.render(this._garageView.element);
     });

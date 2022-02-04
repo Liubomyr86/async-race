@@ -23,7 +23,8 @@ class CarTrack extends BaseComponent {
     name: string,
     color: string,
     id: number,
-    callback: (data: ICarData) => void
+    callback: (data: ICarData) => void,
+    renderCar: () => void
   ) {
     super('div', ['car-container']);
 
@@ -67,6 +68,7 @@ class CarTrack extends BaseComponent {
     this._flag.element.innerHTML = '&#127937';
     this._flag.render(this._carTrack.element);
     this.selectCar(id, callback);
+    this.removeCar(id, renderCar);
   }
 
   selectCar(id: number, callback: (data: ICarData) => void) {
@@ -74,6 +76,14 @@ class CarTrack extends BaseComponent {
       const carData = await api.getCar(id);
       state.selectCarId = id;
       callback(carData);
+    });
+  }
+
+  removeCar(id: number, render: () => void) {
+    this._removeButton.element.addEventListener('click', async () => {
+      await api.deleteCar(id);
+      await api.deleteWinner(id);
+      render();
     });
   }
 }
