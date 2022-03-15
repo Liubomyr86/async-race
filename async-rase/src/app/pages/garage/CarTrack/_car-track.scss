@@ -1,6 +1,8 @@
 @import '../../../../sass/abstracts/mixins';
 
 .car-container {
+  margin-bottom: 10px;
+
   &__settings {
     display: flex;
     margin-bottom: 10px;
@@ -21,11 +23,12 @@
   }
 
   &__track {
+    justify-content: space-between;
     border-bottom: 5px dashed white;
   }
 
   &__flag {
-    flex-grow: 1;
     font-size: 50px;
+    transform: translateX(-180px);
   }
 }

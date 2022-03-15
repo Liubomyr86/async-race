@@ -6,6 +6,7 @@ import Car from '../Car/Car';
 import { api } from '../../../service/APIRequests';
 import { ICarData, Path } from '../../../utils/alias';
 import { state } from '../../../utils/State';
+import { glob } from '../../../utils/global';
 
 class CarTrack extends BaseComponent {
   private _carSettings: BaseComponent;
@@ -62,13 +63,14 @@ class CarTrack extends BaseComponent {
     this._stopButton.render(this._carControls.element);
 
     this._car = new Car(color, id);
-    this._car.render(this._carTrack.element);
+    this._car.render(this._carControls.element);
 
     this._flag = new BaseComponent('span', ['car-container__flag']);
     this._flag.element.innerHTML = '&#127937';
     this._flag.render(this._carTrack.element);
     this.selectCar(id, callback);
     this.removeCar(id, renderCar);
+    this.startCar(id);
   }
 
   selectCar(id: number, callback: (data: ICarData) => void) {
@@ -84,6 +86,28 @@ class CarTrack extends BaseComponent {
       await api.deleteCar(id);
       await api.deleteWinner(id);
       render();
+    });
+  }
+
+  startCar(id: number) {
+    const CAR_WIDTH = 140;
+    this._startButton.element.addEventListener('click', async () => {
+      const engineData = await api.startStopCarsEngine(id, 'started');
+      const time = engineData.distance / engineData.velocity;
+      const distance = Math.floor(
+        glob.getDistanceBetweenElements(this._car.element, this._flag.element) +
+          CAR_WIDTH
+      );
+      const animationId = glob.animation(this._car.element, distance, time);
+      console.log(animationId);
+
+      const status = await api.drive(id, 'drive');
+      console.log(status.success);
+      if (!status.success) {
+        console.log(animationId);
+
+        window.cancelAnimationFrame(animationId);
+      }
     });
   }
 }

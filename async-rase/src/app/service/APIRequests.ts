@@ -1,4 +1,11 @@
-import { ICarData, IQueryParams, IWinnersData, Path } from '../utils/alias';
+import {
+  ICarData,
+  IDriveStatus,
+  IEngineData,
+  IQueryParams,
+  IWinnersData,
+  Path,
+} from '../utils/alias';
 
 class APIRequests {
   private _url: string = 'http://127.0.0.1:3000';
@@ -57,6 +64,35 @@ class APIRequests {
     await fetch(`${this._url}${Path.garage}/${id}`, {
       method: 'DELETE',
     });
+  }
+
+  // Engine
+  async startStopCarsEngine(id: number, status: string) {
+    const response = await fetch(
+      `${this._url}${Path.engine}${this.generateQueryString([
+        { key: 'id', value: id },
+        { key: 'status', value: status },
+      ])}`,
+      {
+        method: 'PATCH',
+      }
+    );
+    const data: IEngineData = await response.json();
+    return data;
+  }
+
+  async drive(id: number, status: string) {
+    const response = await fetch(
+      `${this._url}${Path.engine}${this.generateQueryString([
+        { key: 'id', value: id },
+        { key: 'status', value: status },
+      ])}`,
+      {
+        method: 'PATCH',
+      }
+    ).catch();
+
+    return response.status !== 200 ? { success: false } : await response.json();
   }
 
   // Winners
