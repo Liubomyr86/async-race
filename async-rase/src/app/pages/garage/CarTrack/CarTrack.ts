@@ -6,7 +6,7 @@ import Car from '../Car/Car';
 import { api } from '../../../service/APIRequests';
 import { ICarData, Path } from '../../../utils/alias';
 import { state } from '../../../utils/State';
-import { glob } from '../../../utils/global';
+// import { glob } from '../../../utils/global';
 
 class CarTrack extends BaseComponent {
   private _carSettings: BaseComponent;
@@ -71,6 +71,7 @@ class CarTrack extends BaseComponent {
     this.selectCar(id, callback);
     this.removeCar(id, renderCar);
     this.startCar(id);
+    this.stopCar(id);
   }
 
   selectCar(id: number, callback: (data: ICarData) => void) {
@@ -95,20 +96,69 @@ class CarTrack extends BaseComponent {
       const engineData = await api.startStopCarsEngine(id, 'started');
       const time = engineData.distance / engineData.velocity;
       const distance = Math.floor(
-        glob.getDistanceBetweenElements(this._car.element, this._flag.element) +
+        this.getDistanceBetweenElements(this._car.element, this._flag.element) +
           CAR_WIDTH
       );
-      const animationId = glob.animation(this._car.element, distance, time);
-      console.log(animationId);
+      state.animation[id] = this.animation(this._car.element, distance, time);
 
       const status = await api.drive(id, 'drive');
-      console.log(status.success);
-      if (!status.success) {
-        console.log(animationId);
 
-        window.cancelAnimationFrame(animationId);
+      if (!status.success) {
+        console.log(state.animation);
+        window.cancelAnimationFrame(state.animation[id].id!);
       }
     });
+  }
+
+  stopCar(id: number) {
+    this._stopButton.element.addEventListener('click', async () => {
+      await api.startStopCarsEngine(id, 'stopped');
+      this._car.element.style.transform = 'translateX(0px)';
+
+      if (state.animation[id])
+        window.cancelAnimationFrame(state.animation[id].id!);
+    });
+  }
+
+  getElementPosition(element: HTMLElement) {
+    const { top, left, height, width } = element.getBoundingClientRect();
+    const x = left + width / 2;
+    const y = top + height / 2;
+    return { x, y };
+  }
+
+  getDistanceBetweenElements(a: HTMLElement, b: HTMLElement) {
+    const aPosition = this.getElementPosition(a);
+    const bPosition = this.getElementPosition(b);
+
+    const distance = Math.hypot(
+      bPosition.x - aPosition.x,
+      bPosition.y - aPosition.y
+    );
+    return distance;
+  }
+
+  animation(
+    car: HTMLElement,
+    distance: number,
+    animationTime: number
+  ): { id: number | null } {
+    let start: number = 0;
+    let myReq: { id: number | null } = { id: null };
+
+    function step(timestamp: number) {
+      if (!start) start = timestamp;
+      const time = timestamp - start;
+      const passed = Math.round(time * (distance / animationTime));
+      car.style.transform = `translateX(${Math.min(passed, distance)}px)`;
+      if (passed < distance) {
+        myReq.id = window.requestAnimationFrame(step);
+      }
+    }
+
+    myReq.id = window.requestAnimationFrame(step);
+
+    return myReq;
   }
 }
 export default CarTrack;
