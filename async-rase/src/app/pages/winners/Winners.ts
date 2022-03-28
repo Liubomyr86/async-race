@@ -42,7 +42,7 @@ class Winners extends BaseComponent {
     this._countValue.element.textContent = `${winnersData.count}`;
 
     winnersData.data.forEach(async (winner, index) => {
-      const carData = await api.getCar(winner.id);
+      const carData = await api.getCar(winner.id!);
       const positionNumber = index + 1;
       this._winner = new TableData(positionNumber, winner, carData);
       this._winner.render(this._scoreTable.element);

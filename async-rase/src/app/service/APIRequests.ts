@@ -16,7 +16,7 @@ class APIRequests {
       : ``;
 
   // Garage
-  async getCars() {
+  async getCars(): Promise<{ data: ICarData[]; count: number }> {
     const response = await fetch(
       `${this._url}${Path.garage}${this.generateQueryString([
         { key: '_page', value: 1 },
@@ -28,13 +28,13 @@ class APIRequests {
     return { data, count };
   }
 
-  async getCar(id: number) {
+  async getCar(id: number): Promise<ICarData> {
     const response = await fetch(`${this._url}${Path.garage}/${id}`);
     const data: ICarData = await response.json();
     return data;
   }
 
-  async createCar(carData: ICarData) {
+  async createCar(carData: ICarData): Promise<ICarData> {
     const response = await fetch(`${this._url}${Path.garage}`, {
       method: 'POST',
       headers: {
@@ -47,7 +47,7 @@ class APIRequests {
     return data;
   }
 
-  async updateCar(carData: ICarData, id: number) {
+  async updateCar(carData: ICarData, id: number): Promise<ICarData> {
     const response = await fetch(`${this._url}${Path.garage}/${id}`, {
       method: 'PUT',
       headers: {
@@ -60,14 +60,14 @@ class APIRequests {
     return data;
   }
 
-  async deleteCar(id: number) {
+  async deleteCar(id: number): Promise<void> {
     await fetch(`${this._url}${Path.garage}/${id}`, {
       method: 'DELETE',
     });
   }
 
   // Engine
-  async startStopCarsEngine(id: number, status: string) {
+  async startStopCarsEngine(id: number, status: string): Promise<IEngineData> {
     const response = await fetch(
       `${this._url}${Path.engine}${this.generateQueryString([
         { key: 'id', value: id },
@@ -81,7 +81,7 @@ class APIRequests {
     return data;
   }
 
-  async drive(id: number, status: string) {
+  async drive(id: number, status: string): Promise<{ success: boolean }> {
     const response = await fetch(
       `${this._url}${Path.engine}${this.generateQueryString([
         { key: 'id', value: id },
@@ -96,7 +96,7 @@ class APIRequests {
   }
 
   // Winners
-  async getWinners() {
+  async getWinners(): Promise<{ data: IWinnersData[]; count: number }> {
     const response = await fetch(
       `${this._url}${Path.winners}${this.generateQueryString([
         { key: '_page', value: 1 },
@@ -104,14 +104,45 @@ class APIRequests {
       ])}`
     );
     const data: IWinnersData[] = await response.json();
-    const count = Number(response.headers.get('X-Total-Count'));
+    const count: number = Number(response.headers.get('X-Total-Count'));
     return { data, count };
   }
 
-  async deleteWinner(id: number) {
+  async getWinner(id: number): Promise<IWinnersData> {
+    const response = await fetch(`${this._url}${Path.winners}${id}`);
+    const data: IWinnersData = await response.json();
+    return data;
+  }
+
+  async createWinner(winnerData: IWinnersData): Promise<IWinnersData> {
+    const response = await fetch(`${this._url}${Path.winners}`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(winnerData),
+    });
+    const data: IWinnersData = await response.json();
+    return data;
+  }
+
+  async deleteWinner(id: number): Promise<void> {
     await fetch(`${this._url}${Path.winners}/${id}`, {
       method: 'DELETE',
     });
+  }
+
+  async updateWinner(winnerData: IWinnersData): Promise<IWinnersData> {
+    const response = await fetch(`${this._url}${Path.winners}`, {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(winnerData),
+    });
+
+    const data: IWinnersData = await response.json();
+    return data;
   }
 }
 

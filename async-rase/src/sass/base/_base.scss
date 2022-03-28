@@ -55,6 +55,10 @@ html input[disabled] {
     margin-left: 0;
   }
 
+  &_start {
+    background-color: aqua;
+  }
+
   &_generate {
     width: 151px;
   }

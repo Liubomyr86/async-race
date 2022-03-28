@@ -10,7 +10,7 @@ export interface ICarData {
 }
 
 export interface IWinnersData {
-  id: number;
+  id?: number;
   time: number;
   wins: number;
 }

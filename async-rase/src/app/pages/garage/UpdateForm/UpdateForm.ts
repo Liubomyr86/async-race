@@ -12,7 +12,7 @@ class UpdateForm extends BaseComponent {
   private _colorInput: Input;
   private _updateButton: Button;
 
-  constructor() {
+  constructor(renderCar: () => void) {
     super('form', ['form', 'update']);
     this._textInput = new Input(['update__text-input'], 'text');
     this._textInput.element.setAttribute('disabled', 'true');
@@ -25,7 +25,7 @@ class UpdateForm extends BaseComponent {
     this._updateButton = new Button(['btn', 'btn_update'], 'Update');
     this._updateButton.element.setAttribute('disabled', 'true');
     this._updateButton.render(this.element);
-    this.updateCar();
+    this.updateCar(renderCar);
   }
 
   enableForm(data: ICarData) {
@@ -36,8 +36,9 @@ class UpdateForm extends BaseComponent {
     this._updateButton.element.removeAttribute('disabled');
   }
 
-  updateCar() {
-    this._updateButton.element.addEventListener('click', async () => {
+  updateCar(render: () => void) {
+    this._updateButton.element.addEventListener('click', async (event) => {
+      event.preventDefault();
       const carData = {
         name: (<HTMLInputElement>this._textInput.element).value,
         color: (<HTMLInputElement>this._colorInput.element).value,
@@ -46,6 +47,7 @@ class UpdateForm extends BaseComponent {
       this._textInput.element.setAttribute('disabled', 'true');
       this._colorInput.element.setAttribute('disabled', 'true');
       this._updateButton.element.setAttribute('disabled', 'true');
+      render();
     });
   }
 }

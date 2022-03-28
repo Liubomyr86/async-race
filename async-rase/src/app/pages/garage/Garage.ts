@@ -23,6 +23,7 @@ class Garage extends BaseComponent {
   private _countValue: BaseComponent;
   private _pageValue: BaseComponent;
   private _car: CarTrack | undefined;
+  private _garage: CarTrack[] | undefined;
 
   constructor() {
     super('div', ['garage']);
@@ -31,14 +32,17 @@ class Garage extends BaseComponent {
     this._formsContainer.render(this.element);
     this._greateForm = new CreateForm();
     this._greateForm.render(this._formsContainer.element);
-    this._updateForm = new UpdateForm();
+    this._updateForm = new UpdateForm(this.renderCars.bind(this));
     this._updateForm.render(this._formsContainer.element);
 
     this._raceControls = new BaseComponent('div', ['garage__controls']);
     this._raceControls.render(this.element);
     this._raceButton = new Button(['btn', 'btn_race'], 'Race');
+    this._raceButton.element.onclick = () => this.raceAllCars();
     this._raceButton.render(this._raceControls.element);
     this._resetButton = new Button(['btn', 'btn_reset'], 'Reset');
+    this._resetButton.element.onclick = () => this.resetAllCars();
+    this._resetButton.element.setAttribute('disabled', 'true');
     this._resetButton.render(this._raceControls.element);
     this._generateButton = new Button(['btn', 'btn_generate'], 'Generate cars');
     this._generateButton.render(this._raceControls.element);
@@ -61,23 +65,41 @@ class Garage extends BaseComponent {
     this.renderCars();
   }
 
-  async renderCars() {
+  async renderCars(): Promise<void> {
     const carsData = await api.getCars();
     this._countValue.element.textContent = `${carsData.count}`;
     this._garageView.element.innerHTML = '';
     this._countTitle.render(this._garageView.element);
     this._pageTitle.render(this._garageView.element);
+    this._garage = carsData.data.map(
+      (car) =>
+        new CarTrack(
+          car.name,
+          car.color,
+          car.id!,
+          this._updateForm.enableForm.bind(this._updateForm),
+          this.renderCars.bind(this)
+        )
+    );
 
-    carsData.data.forEach((car) => {
-      this._car = new CarTrack(
-        car.name,
-        car.color,
-        car.id!,
-        this._updateForm.enableForm.bind(this._updateForm),
-        this.renderCars.bind(this)
-      );
+    console.log(this._garage);
+
+    this._garage.forEach((car) => {
+      this._car = car;
       this._car.render(this._garageView.element);
     });
+  }
+
+  raceAllCars(): void {
+    this._garage?.forEach((car) => {
+      car.startCar(car.getCarId());
+      car.disableBtn();
+    });
+    this._raceButton.element.setAttribute('disabled', 'true');
+  }
+
+  resetAllCars(): void {
+    this._garage?.forEach((car) => car.startCar(car.getCarId()));
   }
 }
 
