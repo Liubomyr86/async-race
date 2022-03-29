@@ -109,9 +109,15 @@ class APIRequests {
   }
 
   async getWinner(id: number): Promise<IWinnersData> {
-    const response = await fetch(`${this._url}${Path.winners}${id}`);
+    const response = await fetch(`${this._url}${Path.winners}/${id}`);
     const data: IWinnersData = await response.json();
     return data;
+  }
+
+  async getWinnerStatus(id: number): Promise<number> {
+    const response = await fetch(`${this._url}${Path.winners}/${id}`);
+    const status = response.status;
+    return status;
   }
 
   async createWinner(winnerData: IWinnersData): Promise<IWinnersData> {
@@ -133,13 +139,16 @@ class APIRequests {
   }
 
   async updateWinner(winnerData: IWinnersData): Promise<IWinnersData> {
-    const response = await fetch(`${this._url}${Path.winners}`, {
-      method: 'PUT',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(winnerData),
-    });
+    const response = await fetch(
+      `${this._url}${Path.winners}/${winnerData.id}`,
+      {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(winnerData),
+      }
+    );
 
     const data: IWinnersData = await response.json();
     return data;

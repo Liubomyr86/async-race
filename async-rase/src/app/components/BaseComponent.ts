@@ -9,6 +9,9 @@ class BaseComponent {
   render(elem: HTMLElement): HTMLElement {
     return elem.appendChild(this.element);
   }
-}
 
+  remove(elem: HTMLElement): HTMLElement {
+    return elem.removeChild(this.element);
+  }
+}
 export default BaseComponent;

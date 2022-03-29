@@ -4,7 +4,7 @@ import BaseComponent from '../../../components/BaseComponent';
 import Button from '../../../components/Button/Button';
 import Car from '../Car/Car';
 import { api } from '../../../service/APIRequests';
-import { ICarData, Path } from '../../../utils/alias';
+import { ICarData, IWinner, Path } from '../../../utils/alias';
 import { state } from '../../../utils/State';
 
 class CarTrack extends BaseComponent {
@@ -19,6 +19,8 @@ class CarTrack extends BaseComponent {
   private _car: Car;
   private _flag: BaseComponent;
   private carId: number;
+  private _carName: string;
+  private _carColor: string;
 
   constructor(
     name: string,
@@ -29,6 +31,8 @@ class CarTrack extends BaseComponent {
   ) {
     super('div', ['car-container']);
     this.carId = id;
+    this._carName = name;
+    this._carColor = color;
 
     this._carSettings = new BaseComponent('div', ['car-container__settings']);
     this._carSettings.render(this.element);
@@ -44,7 +48,7 @@ class CarTrack extends BaseComponent {
     this._removeButton.render(this._carSettings.element);
 
     this._carTitle = new BaseComponent('h2', ['car-container__title']);
-    this._carTitle.element.textContent = name;
+    this._carTitle.element.textContent = this._carName;
     this._carTitle.render(this._carSettings.element);
 
     this._carTrack = new BaseComponent('div', ['car-container__track']);
@@ -58,10 +62,11 @@ class CarTrack extends BaseComponent {
     this._startButton.render(this._carControls.element);
 
     this._stopButton = new Button(['btn', 'btn_stop'], 'B');
+    this._stopButton.element.setAttribute('disabled', 'true');
     this._stopButton.element.onclick = () => this.stopCar(this.carId);
     this._stopButton.render(this._carControls.element);
 
-    this._car = new Car(color, this.carId);
+    this._car = new Car(this._carColor, this.carId);
     this._car.render(this._carControls.element);
 
     this._flag = new BaseComponent('span', ['car-container__flag']);
@@ -69,12 +74,16 @@ class CarTrack extends BaseComponent {
     this._flag.render(this._carTrack.element);
   }
 
-  getCarId(): number {
-    return this.carId;
+  getCarData(id: number) {
+    if (id === this.carId)
+      return {
+        color: this._carColor,
+        name: this._carName,
+      };
   }
 
-  disableBtn(): void {
-    this._startButton.element.setAttribute('disabled', 'true');
+  getCarId(): number {
+    return this.carId;
   }
 
   async selectCar(
@@ -92,11 +101,13 @@ class CarTrack extends BaseComponent {
     render();
   }
 
-  async startCar(id: number) {
+  async startCar(id: number): Promise<IWinner> {
     const CAR_WIDTH = 140;
+    this._startButton.element.setAttribute('disabled', 'true');
+    this._stopButton.element.removeAttribute('disabled');
+
     const engineData = await api.startStopCarsEngine(id, 'started');
     const time = engineData.distance / engineData.velocity;
-    console.log(id + ': ' + time);
 
     const distance = Math.floor(
       this.getDistanceBetweenElements(this._car.element, this._flag.element) +
@@ -104,14 +115,19 @@ class CarTrack extends BaseComponent {
     );
     state.animation[id] = this.animation(this._car.element, distance, time);
 
-    const status = await api.drive(id, 'drive');
+    const { success } = await api.drive(id, 'drive');
 
-    if (!status.success) {
+    if (!success) {
       window.cancelAnimationFrame(state.animation[id].id!);
     }
+
+    return { success, id, time };
   }
 
   async stopCar(id: number): Promise<void> {
+    this._stopButton.element.setAttribute('disabled', 'true');
+    this._startButton.element.removeAttribute('disabled');
+
     await api.startStopCarsEngine(id, 'stopped');
     this._car.element.style.transform = 'translateX(0px)';
 

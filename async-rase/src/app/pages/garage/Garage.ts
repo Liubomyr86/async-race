@@ -3,7 +3,7 @@ import './_garage.scss';
 import BaseComponent from '../../components/BaseComponent';
 import Button from '../../components/Button/Button';
 import { api } from '../../service/APIRequests';
-import { Path } from '../../utils/alias';
+import { IWinner } from '../../utils/alias';
 import CarTrack from './CarTrack/CarTrack';
 import CreateForm from './CreateForm/CreateForm';
 import UpdateForm from './UpdateForm/UpdateForm';
@@ -24,6 +24,7 @@ class Garage extends BaseComponent {
   private _pageValue: BaseComponent;
   private _car: CarTrack | undefined;
   private _garage: CarTrack[] | undefined;
+  private _message: BaseComponent;
 
   constructor() {
     super('div', ['garage']);
@@ -62,6 +63,8 @@ class Garage extends BaseComponent {
     this._pageValue.element.textContent = `${state.garagePageCount}`;
     this._pageValue.render(this._pageTitle.element);
 
+    this._message = new BaseComponent('p', ['garage__message']);
+
     this.renderCars();
   }
 
@@ -82,24 +85,78 @@ class Garage extends BaseComponent {
         )
     );
 
-    console.log(this._garage);
-
     this._garage.forEach((car) => {
       this._car = car;
       this._car.render(this._garageView.element);
     });
   }
 
-  raceAllCars(): void {
-    this._garage?.forEach((car) => {
-      car.startCar(car.getCarId());
-      car.disableBtn();
-    });
+  async raceAllCars() {
     this._raceButton.element.setAttribute('disabled', 'true');
+
+    const requests: Promise<IWinner>[] | undefined = this._garage?.map(
+      async (car) => await car.startCar(car.getCarId())
+    );
+
+    const carIds = this._garage?.map((car) => car.getCarId());
+    const winner = await this.getWinner(requests, carIds!);
+    this._message.element.textContent = `${winner.car?.name} went first ${winner.time}s !`;
+    this._message.render(this._garageView.element);
+    this.saveWinners(winner.id, winner.time);
   }
 
   resetAllCars(): void {
-    this._garage?.forEach((car) => car.startCar(car.getCarId()));
+    this._resetButton.element.setAttribute('disabled', 'true');
+    this._raceButton.element.removeAttribute('disabled');
+
+    this._message.remove(this._garageView.element);
+
+    this._garage?.forEach((car) => car.stopCar(car.getCarId()));
+  }
+
+  async getWinner(
+    promises: Promise<IWinner>[] | undefined,
+    ids: number[]
+  ): Promise<{
+    car: { name: string; color: string } | undefined;
+    id: number;
+    time: number;
+  }> {
+    const { success, id, time } = await Promise.race(promises!);
+
+    if (!success) {
+      const failedIndex = ids!.findIndex((i: number) => i === id);
+      const restPromises = [
+        ...promises!.slice(0, failedIndex),
+        ...promises!.slice(failedIndex + 1, promises!.length),
+      ];
+      const restIds = [
+        ...ids.slice(0, failedIndex),
+        ...ids.slice(failedIndex + 1, ids.length),
+      ];
+      return this.getWinner(restPromises, restIds);
+    }
+    const car = this._garage?.find((car) => car.getCarData(id));
+    this._resetButton.element.removeAttribute('disabled');
+    return {
+      car: car?.getCarData(id),
+      id: id,
+      time: +(time / 1000).toFixed(2),
+    };
+  }
+  async saveWinners(id: number, time: number) {
+    const winnerStatus = await api.getWinnerStatus(id);
+
+    if (winnerStatus === 404) {
+      await api.createWinner({ id, time, wins: 1 });
+    } else {
+      const winner = await api.getWinner(id);
+      await api.updateWinner({
+        id,
+        wins: winner.wins + 1,
+        time: time < winner.time ? time : winner.time,
+      });
+    }
   }
 }
 

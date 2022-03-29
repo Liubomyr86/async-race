@@ -28,3 +28,9 @@ export interface IEngineData {
 export interface IDriveStatus {
   success: boolean;
 }
+
+export interface IWinner {
+  success: boolean;
+  id: number;
+  time: number;
+}
