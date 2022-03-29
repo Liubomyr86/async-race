@@ -10,7 +10,7 @@ import UpdateForm from './UpdateForm/UpdateForm';
 import { state } from '../../utils/State';
 
 class Garage extends BaseComponent {
-  private _greateForm: CreateForm;
+  private _createForm: CreateForm;
   private _updateForm: UpdateForm;
   private _raceButton: Button;
   private _resetButton: Button;
@@ -31,8 +31,8 @@ class Garage extends BaseComponent {
 
     this._formsContainer = new BaseComponent('div', ['garage__forms']);
     this._formsContainer.render(this.element);
-    this._greateForm = new CreateForm();
-    this._greateForm.render(this._formsContainer.element);
+    this._createForm = new CreateForm();
+    this._createForm.render(this._formsContainer.element);
     this._updateForm = new UpdateForm(this.renderCars.bind(this));
     this._updateForm.render(this._formsContainer.element);
 
@@ -46,6 +46,7 @@ class Garage extends BaseComponent {
     this._resetButton.element.setAttribute('disabled', 'true');
     this._resetButton.render(this._raceControls.element);
     this._generateButton = new Button(['btn', 'btn_generate'], 'Generate cars');
+    this._generateButton.element.onclick = () => this.generateCars();
     this._generateButton.render(this._raceControls.element);
 
     this._garageView = new BaseComponent('div', ['garage__view']);
@@ -84,6 +85,8 @@ class Garage extends BaseComponent {
           this.renderCars.bind(this)
         )
     );
+
+    console.log(this._garage);
 
     this._garage.forEach((car) => {
       this._car = car;
@@ -157,6 +160,58 @@ class Garage extends BaseComponent {
         time: time < winner.time ? time : winner.time,
       });
     }
+  }
+
+  generateCars() {
+    const models = [
+      'Tesla',
+      'Mersedes',
+      'BWM',
+      'Toyota',
+      'Zhiguli',
+      'Moskvich',
+      'Opel',
+      'Aston Martin',
+      'Porshe',
+    ];
+
+    const names = [
+      'Model S',
+      'CLK',
+      '7',
+      'Camry',
+      '9',
+      'Corsa',
+      'DB9',
+      'Cayene',
+    ];
+
+    const getRandomName = () => {
+      const model = models[Math.floor(Math.random() * models.length)];
+      const name = names[Math.floor(Math.random() * names.length)];
+      return `${model}  ${name}`;
+    };
+
+    const getRandomColor = () => {
+      const letters = '0123456789ABCDEF';
+      let color = '#';
+      for (let i = 0; i < 6; i++) {
+        color += letters[Math.floor(Math.random() * 16)];
+      }
+      return color;
+    };
+
+    const generateRandomCars = (
+      count = 100
+    ): Array<{ name: string; color: string }> =>
+      new Array(count)
+        .fill('car')
+        .map(() => ({ name: getRandomName(), color: getRandomColor() }));
+    const carsArr = generateRandomCars();
+
+    carsArr.forEach((car) => api.createCar(car));
+    this.renderCars();
+    console.log(carsArr);
   }
 }
 
