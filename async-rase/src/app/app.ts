@@ -17,7 +17,11 @@ class App {
     this.header = new Header();
 
     this.main = new BaseComponent('main', ['main']);
-    this.router = new Router(this.onRoute.bind(this));
+    this.router = new Router(
+      this.onRoute.bind(this),
+      this.header.disableBtn.bind(this.header),
+      this.header.enableBtn.bind(this.header)
+    );
 
     this.footer = new Footer();
 
@@ -32,6 +36,7 @@ class App {
 
   onRoute() {
     this.main!.element.innerHTML = '';
+
     this.main!.element.appendChild(this.router.currentComponent.element);
   }
 }

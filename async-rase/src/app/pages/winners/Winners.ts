@@ -14,7 +14,7 @@ class Winners extends BaseComponent {
   private _scoreTable: Table;
   private _winner: TableData | undefined;
 
-  constructor() {
+  constructor(disable: () => void, enable: () => void) {
     super('div', ['winners']);
 
     this._countTitle = new BaseComponent('div', ['winners__cars-count']);

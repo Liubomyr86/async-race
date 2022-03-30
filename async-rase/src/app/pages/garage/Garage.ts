@@ -25,9 +25,13 @@ class Garage extends BaseComponent {
   private _car: CarTrack | undefined;
   private _garage: CarTrack[] | undefined;
   private _message: BaseComponent;
+  private disable: () => void;
+  private enable: () => void;
 
-  constructor() {
+  constructor(disable: () => void, enable: () => void) {
     super('div', ['garage']);
+    this.disable = disable;
+    this.enable = enable;
 
     this._formsContainer = new BaseComponent('div', ['garage__forms']);
     this._formsContainer.render(this.element);
@@ -96,6 +100,7 @@ class Garage extends BaseComponent {
 
   async raceAllCars() {
     this._raceButton.element.setAttribute('disabled', 'true');
+    this.disable();
 
     const requests: Promise<IWinner>[] | undefined = this._garage?.map(
       async (car) => await car.startCar(car.getCarId())
@@ -109,6 +114,7 @@ class Garage extends BaseComponent {
   }
 
   resetAllCars(): void {
+    this.enable();
     this._resetButton.element.setAttribute('disabled', 'true');
     this._raceButton.element.removeAttribute('disabled');
 
