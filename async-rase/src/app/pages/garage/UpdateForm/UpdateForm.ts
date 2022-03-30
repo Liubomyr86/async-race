@@ -44,6 +44,8 @@ class UpdateForm extends BaseComponent {
         color: (<HTMLInputElement>this._colorInput.element).value,
       };
       await api.updateCar(carData, state.selectCarId);
+      (<HTMLInputElement>this._textInput.element).value = '';
+      (<HTMLInputElement>this._colorInput.element).value = '#000000';
       this._textInput.element.setAttribute('disabled', 'true');
       this._colorInput.element.setAttribute('disabled', 'true');
       this._updateButton.element.setAttribute('disabled', 'true');

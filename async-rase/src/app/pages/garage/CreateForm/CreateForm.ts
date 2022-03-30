@@ -10,7 +10,7 @@ class CreateForm extends BaseComponent {
   private _colorInput: Input;
   private _greateButton: Button;
 
-  constructor() {
+  constructor(renderCar: () => void) {
     super('form', ['form', 'greate']);
     this._textInput = new Input(['greate__text-input'], 'text');
     this._textInput.render(this.element);
@@ -20,16 +20,20 @@ class CreateForm extends BaseComponent {
 
     this._greateButton = new Button(['btn', 'btn_create'], 'Create');
     this._greateButton.render(this.element);
-    this.createCar();
+    this.createCar(renderCar);
   }
 
-  createCar() {
-    this._greateButton.element.addEventListener('click', async () => {
+  createCar(render: () => void) {
+    this._greateButton.element.addEventListener('click', async (event) => {
+      event.preventDefault();
       const carData = {
         name: (<HTMLInputElement>this._textInput.element).value,
         color: (<HTMLInputElement>this._colorInput.element).value,
       };
       await api.createCar(carData);
+      (<HTMLInputElement>this._textInput.element).value = '';
+      (<HTMLInputElement>this._colorInput.element).value = '#000000';
+      render();
     });
   }
 }

@@ -31,7 +31,7 @@ class Garage extends BaseComponent {
 
     this._formsContainer = new BaseComponent('div', ['garage__forms']);
     this._formsContainer.render(this.element);
-    this._createForm = new CreateForm();
+    this._createForm = new CreateForm(this.renderCars.bind(this));
     this._createForm.render(this._formsContainer.element);
     this._updateForm = new UpdateForm(this.renderCars.bind(this));
     this._updateForm.render(this._formsContainer.element);
