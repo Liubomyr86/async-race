@@ -1,7 +1,6 @@
 import BaseComponent from './components/BaseComponent';
 import Footer from './components/Footer/Footer';
 import Header from './components/Header/Header';
-import Garage from './pages/garage/Garage';
 import { Router } from './router/Router';
 
 class App {
@@ -17,11 +16,7 @@ class App {
     this.header = new Header();
 
     this.main = new BaseComponent('main', ['main']);
-    this.router = new Router(
-      this.onRoute.bind(this),
-      this.header.disableBtn.bind(this.header),
-      this.header.enableBtn.bind(this.header)
-    );
+    this.router = new Router(this.onRoute.bind(this));
 
     this.footer = new Footer();
 
@@ -36,8 +31,7 @@ class App {
 
   onRoute() {
     this.main!.element.innerHTML = '';
-
-    this.main!.element.appendChild(this.router.currentComponent.element);
+    this.main!.element.appendChild(this.router.currentComponent!.element);
   }
 }
 

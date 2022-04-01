@@ -25,13 +25,37 @@ class Garage extends BaseComponent {
   private _car: CarTrack | undefined;
   private _garage: CarTrack[] | undefined;
   private _message: BaseComponent;
-  private disable: () => void;
-  private enable: () => void;
+  private _prevButton: Button;
+  private _nextButton: Button;
+  private _pageControls: BaseComponent;
+  private _garageButton: Button;
+  private _garageLink: BaseComponent;
+  private _winnersButton: Button;
+  private _winnersLink: BaseComponent;
+  private _viewsControls: BaseComponent;
 
-  constructor(disable: () => void, enable: () => void) {
+  constructor(renderWinnersView: () => Promise<void>) {
     super('div', ['garage']);
-    this.disable = disable;
-    this.enable = enable;
+
+    this._viewsControls = new BaseComponent('div', ['garage__views-controls']);
+    this._viewsControls.render(this.element);
+
+    this._garageButton = new Button(['btn', 'btn_garage'], '');
+    this._garageLink = new BaseComponent('a');
+    this._garageLink.element.textContent = 'Garage';
+    this._garageLink.element.setAttribute('href', '#garage');
+    this._garageLink.render(this._garageButton.element);
+    this._garageButton.render(this._viewsControls.element);
+    this._winnersButton = new Button(['btn', 'btn_winners'], '');
+    this._winnersButton.element.onclick = () => {
+      state.view = 'winners';
+      renderWinnersView();
+    };
+    this._winnersLink = new BaseComponent('a');
+    this._winnersLink.element.setAttribute('href', '#winners');
+    this._winnersLink.element.textContent = 'Winners';
+    this._winnersLink.render(this._winnersButton.element);
+    this._winnersButton.render(this._viewsControls.element);
 
     this._formsContainer = new BaseComponent('div', ['garage__forms']);
     this._formsContainer.render(this.element);
@@ -65,8 +89,18 @@ class Garage extends BaseComponent {
     this._pageTitle.element.textContent = 'Page # ';
     this._pageTitle.render(this._garageView.element);
     this._pageValue = new BaseComponent('span');
-    this._pageValue.element.textContent = `${state.garagePageCount}`;
     this._pageValue.render(this._pageTitle.element);
+
+    this._pageControls = new BaseComponent('div', ['garage__page-controls']);
+    this._pageControls.render(this.element);
+
+    this._prevButton = new Button(['btn', 'btn_prev'], 'Prev');
+    this._prevButton.element.onclick = () => this.prevGaragePage();
+    this._prevButton.render(this._pageControls.element);
+
+    this._nextButton = new Button(['btn', 'btn_next'], 'Next');
+    this._nextButton.element.onclick = () => this.nextGaragePage();
+    this._nextButton.render(this._pageControls.element);
 
     this._message = new BaseComponent('p', ['garage__message']);
 
@@ -74,11 +108,15 @@ class Garage extends BaseComponent {
   }
 
   async renderCars(): Promise<void> {
-    const carsData = await api.getCars();
+    const carsData = await api.getCars(state.garagePageCount);
     this._countValue.element.textContent = `${carsData.count}`;
+    this._pageValue.element.textContent = `${state.garagePageCount}`;
+
     this._garageView.element.innerHTML = '';
     this._countTitle.render(this._garageView.element);
     this._pageTitle.render(this._garageView.element);
+    state.totalCars = carsData.count;
+
     this._garage = carsData.data.map(
       (car) =>
         new CarTrack(
@@ -90,7 +128,8 @@ class Garage extends BaseComponent {
         )
     );
 
-    console.log(this._garage);
+    state.garagePageCars = this._garage.length;
+    this.enableDisableBtn();
 
     this._garage.forEach((car) => {
       this._car = car;
@@ -100,7 +139,6 @@ class Garage extends BaseComponent {
 
   async raceAllCars() {
     this._raceButton.element.setAttribute('disabled', 'true');
-    this.disable();
 
     const requests: Promise<IWinner>[] | undefined = this._garage?.map(
       async (car) => await car.startCar(car.getCarId())
@@ -114,7 +152,6 @@ class Garage extends BaseComponent {
   }
 
   resetAllCars(): void {
-    this.enable();
     this._resetButton.element.setAttribute('disabled', 'true');
     this._raceButton.element.removeAttribute('disabled');
 
@@ -217,7 +254,33 @@ class Garage extends BaseComponent {
 
     carsArr.forEach((car) => api.createCar(car));
     this.renderCars();
-    console.log(carsArr);
+  }
+
+  enableDisableBtn() {
+    if (!state.totalCars) return;
+    if (state.garagePageCount * 7 < state.totalCars) {
+      this._nextButton.element.removeAttribute('disabled');
+    } else {
+      this._nextButton.element.setAttribute('disabled', 'true');
+    }
+    if (state.garagePageCount > 1) {
+      this._prevButton.element.removeAttribute('disabled');
+    } else {
+      this._prevButton.element.setAttribute('disabled', 'true');
+    }
+  }
+  nextGaragePage() {
+    state.garagePageCount++;
+    this.enableDisableBtn();
+    this.renderCars();
+    this.resetAllCars();
+  }
+
+  prevGaragePage() {
+    state.garagePageCount--;
+    this.enableDisableBtn();
+    this.renderCars();
+    this.resetAllCars();
   }
 }
 

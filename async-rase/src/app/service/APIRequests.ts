@@ -16,15 +16,16 @@ class APIRequests {
       : ``;
 
   // Garage
-  async getCars(): Promise<{ data: ICarData[]; count: number }> {
+  async getCars(page: number): Promise<{ data: ICarData[]; count: number }> {
     const response = await fetch(
       `${this._url}${Path.garage}${this.generateQueryString([
-        { key: '_page', value: 1 },
+        { key: '_page', value: page },
         { key: '_limit', value: 7 },
       ])}`
     );
     const data: ICarData[] = await response.json();
     const count = Number(response.headers.get('X-Total-Count'));
+
     return { data, count };
   }
 
@@ -96,10 +97,12 @@ class APIRequests {
   }
 
   // Winners
-  async getWinners(): Promise<{ data: IWinnersData[]; count: number }> {
+  async getWinners(
+    page: number
+  ): Promise<{ data: IWinnersData[]; count: number }> {
     const response = await fetch(
       `${this._url}${Path.winners}${this.generateQueryString([
-        { key: '_page', value: 1 },
+        { key: '_page', value: page },
         { key: '_limit', value: 10 },
       ])}`
     );

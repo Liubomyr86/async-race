@@ -22,6 +22,20 @@
     margin-bottom: 20px;
   }
 
+  &__page-controls,
+  &__views-controls {
+    position: absolute;
+    left: 0;
+    z-index: 1;
+  }
+
+  &__page-controls {
+    bottom: 25px;
+  }
+  &__views-controls {
+    top: 25px;
+  }
+
   &__message {
     top: 50%;
     left: calc(50% - 250px);

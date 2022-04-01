@@ -9,6 +9,10 @@ html input[disabled] {
   background-color: darkgray;
 }
 
+#root {
+  position: relative;
+}
+
 .main {
   min-height: calc(100vh - 140px);
   width: 100%;
