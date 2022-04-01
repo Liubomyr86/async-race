@@ -232,7 +232,7 @@ class Garage extends BaseComponent {
     const getRandomName = () => {
       const model = models[Math.floor(Math.random() * models.length)];
       const name = names[Math.floor(Math.random() * names.length)];
-      return `${model}  ${name}`;
+      return `${model} ${name}`;
     };
 
     const getRandomColor = () => {

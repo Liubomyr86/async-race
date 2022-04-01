@@ -98,12 +98,16 @@ class APIRequests {
 
   // Winners
   async getWinners(
-    page: number
+    page: number,
+    sort: string,
+    order: string
   ): Promise<{ data: IWinnersData[]; count: number }> {
     const response = await fetch(
       `${this._url}${Path.winners}${this.generateQueryString([
         { key: '_page', value: page },
         { key: '_limit', value: 10 },
+        { key: '_sort', value: sort },
+        { key: '_order', value: order },
       ])}`
     );
     const data: IWinnersData[] = await response.json();

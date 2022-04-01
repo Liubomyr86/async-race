@@ -1,5 +1,4 @@
 class State {
-  // public garageCount: number = 0;
   public garagePageCount: number = 1;
   public winnersPageCount: number = 1;
   public view: string = window.location.hash.slice(1);
@@ -11,6 +10,9 @@ class State {
   public totalCars: number = 0;
   public selectCarId: number = 0;
   public animation: { [index: number]: { id: number | null } } = {};
+
+  public sortBy: string = 'wins';
+  public sortOrder: string = 'desc';
 }
 
 export const state = new State();

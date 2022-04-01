@@ -7,3 +7,15 @@
     padding: 8px;
   }
 }
+.table {
+  &__btn {
+    cursor: pointer;
+    user-select: none;
+    &.asc::after {
+      content: '↑';
+    }
+    &.desc::after {
+      content: '↓';
+    }
+  }
+}

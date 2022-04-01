@@ -24,6 +24,7 @@ class Winners extends BaseComponent {
   private _garageLink: BaseComponent;
   private _winnersButton: Button;
   private _winnersLink: BaseComponent;
+  private _tableBody: BaseComponent;
 
   constructor() {
     super('div', ['winners']);
@@ -57,6 +58,11 @@ class Winners extends BaseComponent {
     this._pageValue.element.textContent = '1';
     this._pageValue.render(this._pageTitle.element);
 
+    this._scoreTable = new Table(this.renderWinners.bind(this));
+    this._scoreTable.render(this.element);
+    this._tableBody = new BaseComponent('tbody');
+    this._tableBody.render(this._scoreTable.element);
+
     this._winnersView = new BaseComponent('div', ['winners__view']);
     this._winnersView.render(this.element);
 
@@ -75,12 +81,14 @@ class Winners extends BaseComponent {
   }
 
   async renderWinners(): Promise<void> {
-    const winnersData = await api.getWinners(state.winnersPageCount);
+    const winnersData = await api.getWinners(
+      state.winnersPageCount,
+      state.sortBy,
+      state.sortOrder
+    );
     this._countValue.element.textContent = `${winnersData.count}`;
     this._pageValue.element.textContent = `${state.winnersPageCount}`;
-    this._winnersView.element.innerHTML = '';
-    this._scoreTable = new Table();
-    this._scoreTable.render(this._winnersView.element);
+    this._tableBody.element.innerHTML = '';
 
     state.totalWinners = winnersData.count;
 
@@ -94,7 +102,7 @@ class Winners extends BaseComponent {
 
     this._winners.forEach(async (winner) => {
       this._winner = winner;
-      (await this._winner).render(this._scoreTable!.element);
+      (await this._winner).render(this._tableBody.element);
     });
   }
 
